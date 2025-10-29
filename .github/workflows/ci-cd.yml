@@ -1,28 +1,37 @@
-name: Build and Push Wisecow Image
+name: Deploy Wisecow App to Kubernetes
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Build and Push Wisecow Image"]
+    types:
+      - completed
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.TOKEN }}" | docker login ghcr.io -u Akilan3585 --password-stdin
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
 
-      - name: Build Docker image
+      - name: Configure K8s cluster access
         run: |
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          docker build -t ghcr.io/akilan3585/wisecow:${SHORT_SHA} .
+          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+          export KUBECONFIG=kubeconfig
 
-      - name: Push Docker image
+      - name: Apply Kubernetes manifests
         run: |
-          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          docker push ghcr.io/akilan3585/wisecow:${SHORT_SHA}
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
 
+      - name: Upload manifests as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wisecow-manifests
+          path: k8s/
