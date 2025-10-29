@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -16,7 +17,12 @@ jobs:
         run: echo "${{ secrets.TOKEN }}" | docker login ghcr.io -u Akilan3585 --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/akilan3585/wisecow:${CI_COMMIT_SHORT_SHA} .
+        run: |
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          docker build -t ghcr.io/akilan3585/wisecow:${SHORT_SHA} .
 
       - name: Push Docker image
-        run: docker push ghcr.io/akilan3585/wisecow:${CI_COMMIT_SHORT_SHA}
+        run: |
+          SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          docker push ghcr.io/akilan3585/wisecow:${SHORT_SHA}
+
