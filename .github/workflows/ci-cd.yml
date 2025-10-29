@@ -1,0 +1,22 @@
+name: Build and Push Wisecow Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.TOKEN }}" | docker login ghcr.io -u Akilan3585 --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/akilan3585/wisecow:${CI_COMMIT_SHORT_SHA} .
+
+      - name: Push Docker image
+        run: docker push ghcr.io/akilan3585/wisecow:${CI_COMMIT_SHORT_SHA}
