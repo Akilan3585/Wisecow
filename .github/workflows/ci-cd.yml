@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'k8s/*' 
 permissions:
   contents: write
 
@@ -43,15 +45,15 @@ jobs:
           SHORT_SHA=$(echo "${GITHUB_SHA}" | cut -c1-7)
           NEW_IMAGE="ghcr.io/akilan3585/wisecow:${SHORT_SHA}"
           echo "Updating image to ${NEW_IMAGE}"
-          sed -i "s|image: .*|image: ${NEW_IMAGE}|g" kubernetes/deployment.yaml
+          sed -i "s|image: .*|image: ${NEW_IMAGE}|g" k8s/deployment.yaml
 
       - name: Commit and push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "Akilan B"
-          git config --global user.email "akilanb@example.com"
+          git config --global user.name "Akilan3585"
+          git config --global user.email "akilanb28@gmail.com"
           git checkout main
-          git add kubernetes/deployment.yaml
+          git add k8s/deployment.yaml
           git commit -m "Update image to ${NEW_IMAGE} [skip ci]" || echo "No changes to commit"
           git push origin main
