@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: wisecow.192.168.187.101.nip.io
+  - host: wisecow.com
     http:
       paths:
       - path: /
@@ -22,5 +22,5 @@ spec:
               number: 80
   tls:
   - hosts:
-    - wisecow.192.168.187.101.nip.io
+    - wisecow.com
     secretName: wisecow-tls1
