@@ -11,5 +11,5 @@ spec:
   dnsNames:
     - wisecow.com
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt-staging
     kind: ClusterIssuer
