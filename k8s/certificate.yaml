@@ -5,11 +5,11 @@ metadata:
   namespace: default
 spec:
   secretName: wisecow-tls1
-  duration: 2160h 
-  renewBefore: 360h 
+  duration: 2160h
+  renewBefore: 360h
   commonName: wisecow.com
   dnsNames:
     - wisecow.com
   issuerRef:
-    name: letsencrypt-staging
+    name: selfsigned-cluster-issuer
     kind: ClusterIssuer
