@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wisecow-cert
+  namespace: default
+spec:
+  secretName: wisecow-tls1
+  duration: 2160h 
+  renewBefore: 360h 
+  commonName: wisecow.com
+  dnsNames:
+    - wisecow.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
